@@ -12,10 +12,9 @@ const DropDownContainer = styled.div`
 const DropDownHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  margin: 1.5rem;
   padding: 1rem 1rem;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -28,21 +27,20 @@ const DropDownListContainer = styled.div``;
 
 const DropDownList = styled.ul`
   position: absolute;
-  width: 223px;
+  width: 269px;
   overflow-y: scroll;
   height: 250px;
   padding: 0;
-  font-size: 1rem;
   font-weight: 400;
   background-color: var(--blue);
   color: var(--white);
-  margin: 0 1.3rem;
   &:first-child {
-    padding-top: 0.8em;
+    margin-top: 0.8em;
   }
 `;
 
 const ListItem = styled.li`
+  font-size: 0.9rem;
   list-style: none;
   text-align: left;
   margin-bottom: 0.8em;

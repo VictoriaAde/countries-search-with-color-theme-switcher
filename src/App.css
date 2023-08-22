@@ -26,8 +26,8 @@
 .main form {
   background-color: var(--blue);
   padding: 0.7rem;
-  margin: 0 1.5rem;
   display: flex;
+  /* margin: 0 1.5rem; */
   align-items: center;
   border-radius: 5px;
 }
@@ -49,12 +49,15 @@
   padding: 0.5rem 0.5rem;
   border: none;
 }
+.form_and_FilterDiv {
+  padding: 0 1rem;
+}
 .countries {
   background-color: var(--dark-blue);
   padding: 0 1.5rem;
   display: grid;
   grid-template-columns: 1fr;
-  grid-gap: 1rem;
+  grid-gap: 3rem;
 }
 .country {
   background-color: var(--blue);
@@ -73,36 +76,43 @@
 .country_info span {
   font-weight: 600;
 }
+.img_flag {
+  width: 100%;
+}
 @media screen and (min-width: 767px) {
   .top_nav {
-    padding: 2rem 1.3rem;
+    padding: 2rem 2rem;
   }
   .form_and_FilterDiv {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     justify-content: baseline;
+    padding: 0 2rem;
   }
   .countries {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-gap: 1rem;
+    grid-gap: 3rem;
+    padding: 2rem;
   }
 }
 
 @media screen and (min-width: 1023px) {
   .top_nav {
-    padding: 2rem 1.5rem;
+    padding: 2rem 3rem;
   }
   .form_and_FilterDiv {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     justify-content: baseline;
+    padding: 0 3rem;
   }
   .countries {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 1rem;
+    grid-gap: 3rem;
+    padding: 0 3rem;
   }
 }

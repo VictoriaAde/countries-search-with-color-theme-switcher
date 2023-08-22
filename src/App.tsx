@@ -12,6 +12,7 @@ const App: React.FC = () => {
 
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [countries, setCountries] = useState<any[]>([]);
+  console.log(countries);
 
   useEffect(() => {
     axios
@@ -29,9 +30,20 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedOption !== null && selectedOption !== "Filter By Region") {
+    if (selectedOption === "Filter By Region") {
+      // Fetch all countries
       axios
-        .get(`/region/${selectedOption}`)
+        .get("/name/")
+        .then((response) => {
+          setCountries(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching countries:", error);
+        });
+    } else {
+      // Fetch countries based on the selected region
+      axios
+        .get(`/name/${selectedOption}`)
         .then((response) => {
           setCountries(response.data);
         })
@@ -41,22 +53,22 @@ const App: React.FC = () => {
     }
   }, [selectedOption]);
 
+  // useEffect(() => {
+  //   if (selectedOption !== null && selectedOption !== "Filter By Region") {
+  //     axios
+  //       .get(`/name/${selectedOption}`)
+  //       .then((response) => {
+  //         setCountries(response.data);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching countries:", error);
+  //       });
+  //   }
+  // }, [selectedOption]);
+
   const handleOptionSelected = (option: string) => {
     setSelectedOption(option);
   };
-  // useEffect(() => {
-  //   axios
-  //     .get("/all") // Use the relative endpoint
-  //     .then((response) => {
-  //       const options = response.data.map(
-  //         (country: any) => country.name.common
-  //       );
-  //       setCountryOptions(options);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching country options:", error);
-  //     });
-  // }, []);
 
   return (
     <main className="main">
@@ -92,68 +104,30 @@ const App: React.FC = () => {
           />
         </div>
       </div>
-
       <div className="countries">
-        <div className="country">
-          <div>Image</div>
-          <div className="country_info">
-            <h3>United States of America</h3>
-            <p>
-              <span>Population:</span> 345.66.000
-            </p>
-            <p>
-              <span>Region:</span> Americas
-            </p>
-            <p>
-              <span>Capital:</span> Washinton D.C
-            </p>
+        {countries?.map((country) => (
+          <div className="country" key={country.ccn3}>
+            <div>
+              <img
+                className="img_flag"
+                src={country.flags.svg}
+                alt={country.flags.alt}
+              />
+            </div>
+            <div className="country_info">
+              <h3>{country.name.common}</h3>
+              <p>
+                <span>Population:</span> {country.population}
+              </p>
+              <p>
+                <span>Region:</span> {country.region}
+              </p>
+              <p>
+                <span>Capital:</span> {country.capital[0]}
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="country">
-          <div>Image</div>
-          <div className="country_info">
-            <h3>United States of America</h3>
-            <p>
-              <span>Population:</span> 345.66.000
-            </p>
-            <p>
-              <span>Region:</span> Americas
-            </p>
-            <p>
-              <span>Capital:</span> Washinton D.C
-            </p>
-          </div>
-        </div>
-        <div className="country">
-          <div>Image</div>
-          <div className="country_info">
-            <h3>United States of America</h3>
-            <p>
-              <span>Population:</span> 345.66.000
-            </p>
-            <p>
-              <span>Region:</span> Americas
-            </p>
-            <p>
-              <span>Capital:</span> Washinton D.C
-            </p>
-          </div>
-        </div>
-        <div className="country">
-          <div>Image</div>
-          <div className="country_info">
-            <h3>United States of America</h3>
-            <p>
-              <span>Population:</span> 345.66.000
-            </p>
-            <p>
-              <span>Region:</span> Americas
-            </p>
-            <p>
-              <span>Capital:</span> Washinton D.C
-            </p>
-          </div>
-        </div>
+        ))}
       </div>
     </main>
   );
