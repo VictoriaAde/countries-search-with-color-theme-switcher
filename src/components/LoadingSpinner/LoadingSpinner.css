@@ -3,7 +3,6 @@
   display: grid;
   place-items: center;
   transition: background-color var(--trans-dur), color var(--trans-dur);
-  margin: 0 4rem;
 }
 
 :root {
