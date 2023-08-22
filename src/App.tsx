@@ -5,13 +5,14 @@ import "./global.css";
 import { IoMdMoon } from "react-icons/io";
 import { AiOutlineSearch } from "react-icons/ai";
 import Dropdown from "./components/Dropdown/Dropdown";
+import LoadingSpinner from "./components/LoadingSpinner/LoadingSpinner";
 
 const App: React.FC = () => {
   const [countryOptions, setCountryOptions] = useState<string[]>([]);
-  // console.log(countryOptions);
-
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [countries, setCountries] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   console.log(countries);
 
   useEffect(() => {
@@ -20,9 +21,11 @@ const App: React.FC = () => {
       .then((response) => {
         const options = [
           "Filter By Region",
-          ...response.data.map((country: any) => country.name.common),
+          ...response.data?.map((country: any) => country.name.common),
         ];
         setCountryOptions(options);
+        // Set country data for page load
+        setCountries(response.data);
       })
       .catch((error) => {
         console.error("Error fetching country options:", error);
@@ -30,18 +33,26 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedOption === "Filter By Region") {
-      // Fetch all countries
+    if (selectedOption === "Filter By Region" || selectedOption === null) {
+      setIsLoading(true);
+
       axios
-        .get("/name/")
+        .get("/all")
         .then((response) => {
           setCountries(response.data);
         })
         .catch((error) => {
           console.error("Error fetching countries:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
-    } else {
-      // Fetch countries based on the selected region
+    } else if (
+      selectedOption !== null &&
+      selectedOption !== "Filter By Region"
+    ) {
+      setIsLoading(true);
+
       axios
         .get(`/name/${selectedOption}`)
         .then((response) => {
@@ -49,22 +60,12 @@ const App: React.FC = () => {
         })
         .catch((error) => {
           console.error("Error fetching countries:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   }, [selectedOption]);
-
-  // useEffect(() => {
-  //   if (selectedOption !== null && selectedOption !== "Filter By Region") {
-  //     axios
-  //       .get(`/name/${selectedOption}`)
-  //       .then((response) => {
-  //         setCountries(response.data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching countries:", error);
-  //       });
-  //   }
-  // }, [selectedOption]);
 
   const handleOptionSelected = (option: string) => {
     setSelectedOption(option);
@@ -105,29 +106,38 @@ const App: React.FC = () => {
         </div>
       </div>
       <div className="countries">
-        {countries?.map((country) => (
-          <div className="country" key={country.ccn3}>
-            <div>
-              <img
-                className="img_flag"
-                src={country.flags.svg}
-                alt={country.flags.alt}
-              />
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          countries?.map((country) => (
+            <div className="country" key={country.ccn3}>
+              <div>
+                {country.flags && country.flags.svg && (
+                  <img
+                    className="img_flag"
+                    src={country.flags.svg}
+                    alt={country.flags.alt}
+                  />
+                )}
+              </div>
+              <div className="country_info">
+                <h3>{country.name.common}</h3>
+                <p>
+                  <span>Population:</span> {country.population}
+                </p>
+                <p>
+                  <span>Region:</span> {country.region}
+                </p>
+                <p>
+                  <span>Capital:</span> {country.capital}
+                </p>
+              </div>
             </div>
-            <div className="country_info">
-              <h3>{country.name.common}</h3>
-              <p>
-                <span>Population:</span> {country.population}
-              </p>
-              <p>
-                <span>Region:</span> {country.region}
-              </p>
-              <p>
-                <span>Capital:</span> {country.capital[0]}
-              </p>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
+        {/* {countries?.map((country) => (
+    
+        ))} */}
       </div>
     </main>
   );

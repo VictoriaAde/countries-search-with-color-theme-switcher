@@ -79,6 +79,7 @@
 .img_flag {
   width: 100%;
 }
+
 @media screen and (min-width: 767px) {
   .top_nav {
     padding: 2rem 2rem;
