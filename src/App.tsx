@@ -112,13 +112,11 @@ const App: React.FC = () => {
           countries?.map((country) => (
             <div className="country" key={country.ccn3}>
               <div>
-                {country.flags && country.flags.svg && (
-                  <img
-                    className="img_flag"
-                    src={country.flags.svg}
-                    alt={country.flags.alt}
-                  />
-                )}
+                <img
+                  className="img_flag"
+                  src={country.flags.png}
+                  alt={country.flags.alt}
+                />
               </div>
               <div className="country_info">
                 <h3>{country.name.common}</h3>
@@ -129,7 +127,10 @@ const App: React.FC = () => {
                   <span>Region:</span> {country.region}
                 </p>
                 <p>
-                  <span>Capital:</span> {country.capital}
+                  <span>Capital:</span>{" "}
+                  {country.capital && country.capital[0]
+                    ? country.capital[0]
+                    : "N/A"}
                 </p>
               </div>
             </div>
