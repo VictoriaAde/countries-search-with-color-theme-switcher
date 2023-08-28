@@ -3,9 +3,9 @@ import axios from "./helpers/api";
 import "./App.css";
 import "./global.css";
 import { IoMdMoon } from "react-icons/io";
-import { AiOutlineSearch } from "react-icons/ai";
 import Dropdown from "./components/Dropdown/Dropdown";
 import LoadingSpinner from "./components/LoadingSpinner/LoadingSpinner";
+import SearchComponent from "./components/Search/Search";
 
 const App: React.FC = () => {
   const [regionOptions, setRegionOptions] = useState<string[]>([]);
@@ -17,7 +17,8 @@ const App: React.FC = () => {
     axios
       .get("/all")
       .then((response) => {
-        const regions = response.data.map((region: any) => region.region);
+        const regions = response.data?.map((region: any) => region.region);
+        console.log(response);
 
         const uniqueRegions: string[] = [];
         regions.forEach((region: string) => {
@@ -27,7 +28,6 @@ const App: React.FC = () => {
         });
 
         const options: string[] = ["Filter By Region", ...uniqueRegions];
-        console.log(options, "options");
 
         setRegionOptions(options);
 
@@ -40,42 +40,65 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedOption === "Filter By Region" || selectedOption === null) {
-      setIsLoading(true);
+    setIsLoading(true);
 
-      axios
-        .get(`/region/${selectedOption}`)
-        .then((response) => {
-          setCountries(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching countries:", error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    } else if (
-      selectedOption !== null &&
-      selectedOption !== "Filter By Region"
-    ) {
-      setIsLoading(true);
+    let url = "/all"; // Default URL for fetching all countries
 
-      axios
-        .get(`/region/${selectedOption}`)
-        .then((response) => {
-          setCountries(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching countries:", error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+    if (selectedOption && selectedOption !== "Filter By Region") {
+      url = `/region/${selectedOption}`; // Construct the URL based on selected region
     }
+
+    axios
+      .get(url)
+      .then((response) => {
+        setCountries(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching countries:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [selectedOption]);
+
+  // useEffect(() => {
+  //   if (selectedOption === "Filter By Region" || selectedOption === null) {
+  //     setIsLoading(true);
+
+  //     axios
+  //       .get(`/region/${selectedOption}`)
+  //       .then((response) => {
+  //         setCountries(response.data);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching countries:", error);
+  //       })
+  //       .finally(() => {
+  //         setIsLoading(false);
+  //       });
+  //   } else if (selectedOption !== null) {
+  //     setIsLoading(true);
+
+  //     axios
+  //       .get(`/region/${selectedOption}`)
+  //       .then((response) => {
+  //         setCountries(response.data);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching countries:", error);
+  //       })
+  //       .finally(() => {
+  //         setIsLoading(false);
+  //       });
+  //   }
+  // }, [selectedOption]);
 
   const handleOptionSelected = (option: string) => {
     setSelectedOption(option);
+  };
+
+  const handleSearchResults = (results: any[]) => {
+    setCountries(results);
   };
 
   return (
@@ -92,7 +115,8 @@ const App: React.FC = () => {
       </div>
 
       <div className="form_and_FilterDiv">
-        <form>
+        <SearchComponent onSearchResults={handleSearchResults} />
+        {/* <form>
           <button>
             <AiOutlineSearch size={20} />
           </button>
@@ -103,7 +127,7 @@ const App: React.FC = () => {
             required
             placeholder="Search for country..."
           />
-        </form>
+        </form> */}
 
         <div>
           <Dropdown
@@ -116,8 +140,8 @@ const App: React.FC = () => {
         {isLoading ? (
           <LoadingSpinner />
         ) : (
-          countries?.map((country) => (
-            <div className="country" key={country.ccn3}>
+          countries?.map((country, idx) => (
+            <div className="country" key={idx}>
               <div>
                 <img
                   className="img_flag"

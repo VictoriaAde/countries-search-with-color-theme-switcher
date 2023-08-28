@@ -64,7 +64,6 @@ const Dropdown: React.FC<DropdownProps> = ({ onOptionSelected, options }) => {
   const onOptionClicked = (value: string) => () => {
     setSelectedOption(value);
     onOptionSelected(value);
-    console.log(selectedOption);
     setIsOpen(false);
   };
 
