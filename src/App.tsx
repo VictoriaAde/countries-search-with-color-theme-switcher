@@ -8,22 +8,29 @@ import Dropdown from "./components/Dropdown/Dropdown";
 import LoadingSpinner from "./components/LoadingSpinner/LoadingSpinner";
 
 const App: React.FC = () => {
-  const [countryOptions, setCountryOptions] = useState<string[]>([]);
+  const [regionOptions, setRegionOptions] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [countries, setCountries] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  console.log(countries);
 
   useEffect(() => {
     axios
       .get("/all")
       .then((response) => {
-        const options = [
-          "Filter By Region",
-          ...response.data?.map((country: any) => country.name.common),
-        ];
-        setCountryOptions(options);
+        const regions = response.data.map((region: any) => region.region);
+
+        const uniqueRegions: string[] = [];
+        regions.forEach((region: string) => {
+          if (!uniqueRegions.includes(region)) {
+            uniqueRegions.push(region);
+          }
+        });
+
+        const options: string[] = ["Filter By Region", ...uniqueRegions];
+        console.log(options, "options");
+
+        setRegionOptions(options);
+
         // Set country data for page load
         setCountries(response.data);
       })
@@ -37,7 +44,7 @@ const App: React.FC = () => {
       setIsLoading(true);
 
       axios
-        .get("/all")
+        .get(`/region/${selectedOption}`)
         .then((response) => {
           setCountries(response.data);
         })
@@ -54,7 +61,7 @@ const App: React.FC = () => {
       setIsLoading(true);
 
       axios
-        .get(`/name/${selectedOption}`)
+        .get(`/region/${selectedOption}`)
         .then((response) => {
           setCountries(response.data);
         })
@@ -101,7 +108,7 @@ const App: React.FC = () => {
         <div>
           <Dropdown
             onOptionSelected={handleOptionSelected}
-            options={countryOptions}
+            options={regionOptions}
           />
         </div>
       </div>
