@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-// import axios from "../../helpers/api";
 import styled from "styled-components";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import "../../global.css";
 
 const DropDownContainer = styled.div`
   width: 270px;
@@ -53,9 +51,16 @@ const ArrowDownIcon = styled.span``;
 interface DropdownProps {
   onOptionSelected: (option: string) => void;
   options: string[];
+  countries: any[]; // Pass the countries data as a prop
+  setCountries: (countries: any[]) => void; // Function to update countries
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ onOptionSelected, options }) => {
+const Dropdown: React.FC<DropdownProps> = ({
+  onOptionSelected,
+  options,
+  countries,
+  setCountries,
+}) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -64,6 +69,17 @@ const Dropdown: React.FC<DropdownProps> = ({ onOptionSelected, options }) => {
   const onOptionClicked = (value: string) => () => {
     setSelectedOption(value);
     onOptionSelected(value);
+
+    // Filter countries based on the selected region
+    if (value === "Filter By Region") {
+      setCountries([...countries]); // Reset to the original list
+    } else {
+      const filteredCountries = countries.filter(
+        (country) => country.region === value
+      );
+      setCountries(filteredCountries);
+    }
+
     setIsOpen(false);
   };
 
@@ -79,7 +95,7 @@ const Dropdown: React.FC<DropdownProps> = ({ onOptionSelected, options }) => {
         <DropDownListContainer>
           <DropDownList>
             {options?.map((option) => (
-              <ListItem onClick={onOptionClicked(option)} key={Math.random()}>
+              <ListItem onClick={onOptionClicked(option)} key={option}>
                 {option}
               </ListItem>
             ))}

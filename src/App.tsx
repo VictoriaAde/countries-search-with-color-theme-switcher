@@ -14,6 +14,7 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    // Fetch region options and all countries on page load
     axios
       .get("/all")
       .then((response) => {
@@ -21,8 +22,8 @@ const App: React.FC = () => {
         console.log(response);
 
         const uniqueRegions: string[] = [];
-        regions.forEach((region: string) => {
-          if (!uniqueRegions.includes(region)) {
+        regions?.forEach((region: string | null | undefined) => {
+          if (region && !uniqueRegions.includes(region)) {
             uniqueRegions.push(region);
           }
         });
@@ -40,65 +41,25 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
-
-    let url = "/all"; // Default URL for fetching all countries
-
+    // Fetch countries based on selected region
     if (selectedOption && selectedOption !== "Filter By Region") {
-      url = `/region/${selectedOption}`; // Construct the URL based on selected region
+      setIsLoading(true);
+
+      axios
+        .get(`/region/${selectedOption}`)
+        .then((response) => {
+          setCountries(response.data);
+          setIsLoading(false); // Set loading to false when data is updated
+        })
+        .catch((error) => {
+          console.error("Error fetching countries:", error);
+          setIsLoading(false); // Set loading to false on error too
+        });
     }
-
-    axios
-      .get(url)
-      .then((response) => {
-        setCountries(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching countries:", error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
   }, [selectedOption]);
-
-  // useEffect(() => {
-  //   if (selectedOption === "Filter By Region" || selectedOption === null) {
-  //     setIsLoading(true);
-
-  //     axios
-  //       .get(`/region/${selectedOption}`)
-  //       .then((response) => {
-  //         setCountries(response.data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching countries:", error);
-  //       })
-  //       .finally(() => {
-  //         setIsLoading(false);
-  //       });
-  //   } else if (selectedOption !== null) {
-  //     setIsLoading(true);
-
-  //     axios
-  //       .get(`/region/${selectedOption}`)
-  //       .then((response) => {
-  //         setCountries(response.data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching countries:", error);
-  //       })
-  //       .finally(() => {
-  //         setIsLoading(false);
-  //       });
-  //   }
-  // }, [selectedOption]);
 
   const handleOptionSelected = (option: string) => {
     setSelectedOption(option);
-  };
-
-  const handleSearchResults = (results: any[]) => {
-    setCountries(results);
   };
 
   return (
@@ -115,24 +76,15 @@ const App: React.FC = () => {
       </div>
 
       <div className="form_and_FilterDiv">
-        <SearchComponent onSearchResults={handleSearchResults} />
-        {/* <form>
-          <button>
-            <AiOutlineSearch size={20} />
-          </button>
-          <input
-            type="search"
-            name=""
-            id=""
-            required
-            placeholder="Search for country..."
-          />
-        </form> */}
-
+        {/* Pass countries and setCountries as props to SearchComponent */}
+        <SearchComponent onSearchResults={setCountries} countries={countries} />
         <div>
+          {/* Pass countries and setCountries as props to Dropdown */}
           <Dropdown
             onOptionSelected={handleOptionSelected}
             options={regionOptions}
+            countries={countries}
+            setCountries={() => {}}
           />
         </div>
       </div>
@@ -167,9 +119,6 @@ const App: React.FC = () => {
             </div>
           ))
         )}
-        {/* {countries?.map((country) => (
-    
-        ))} */}
       </div>
     </main>
   );

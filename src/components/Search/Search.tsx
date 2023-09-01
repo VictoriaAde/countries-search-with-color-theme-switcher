@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
-import axios from "../../helpers/api";
 import { AiOutlineSearch } from "react-icons/ai";
 
 interface SearchComponentProps {
   onSearchResults: (results: any[]) => void;
+  countries: any[]; // Pass the countries data as a prop
 }
 
 const SearchComponent: React.FC<SearchComponentProps> = ({
   onSearchResults,
+  countries,
 }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -16,44 +17,19 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
     setSearchTerm(newSearchTerm);
   }, []);
 
-  //   useEffect(() => {
-  //     if (searchTerm.trim() !== "") {
-  //       axios
-  //         .get(`/name/${searchTerm}`)
-  //         .then((response) => {
-  //           onSearchResults(response.data);
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error fetching search results:", error);
-  //         });
-  //     } else {
-  //       onSearchResults([]); // Clear results when search term is empty
-  //     }
-  //   }, [searchTerm, onSearchResults]);
-
   useEffect(() => {
+    // Filter by search term
+    let filtered = countries;
+
     if (searchTerm.trim() !== "") {
-      axios
-        // .get(`/name/${searchTerm}`)
-        .get(`/name/${searchTerm}`)
-        .then((response) => {
-          onSearchResults(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching search results:", error);
-        });
-    } else {
-      // Pass the full list of countries to display all
-      axios
-        .get("/all")
-        .then((response) => {
-          onSearchResults(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching countries:", error);
-        });
+      filtered = filtered.filter((country) =>
+        country.name.common.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
-  }, [searchTerm, onSearchResults]);
+
+    // Pass the filtered countries to the parent component
+    onSearchResults(filtered);
+  }, [searchTerm, countries, onSearchResults]);
 
   return (
     <form>
