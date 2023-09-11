@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 
 interface SearchComponentProps {
@@ -12,24 +12,21 @@ const SearchComponent: React.FC<SearchComponentProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearchTerm = e.target.value;
-    setSearchTerm(newSearchTerm);
-  }, []);
+  const handleSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newSearchTerm = e.target.value;
+      setSearchTerm(newSearchTerm);
 
-  useEffect(() => {
-    // Filter by search term
-    let filtered = countries;
-
-    if (searchTerm.trim() !== "") {
-      filtered = filtered.filter((country) =>
-        country.name.common.toLowerCase().includes(searchTerm.toLowerCase())
+      // Filter countries based on the search term
+      const filtered = countries.filter((country) =>
+        country.name.common.toLowerCase().includes(newSearchTerm.toLowerCase())
       );
-    }
 
-    // Pass the filtered countries to the parent component
-    onSearchResults(filtered);
-  }, [searchTerm, countries, onSearchResults]);
+      // Pass the filtered countries to the parent component
+      onSearchResults(filtered);
+    },
+    [countries, onSearchResults]
+  );
 
   return (
     <form>

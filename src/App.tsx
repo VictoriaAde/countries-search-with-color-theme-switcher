@@ -11,6 +11,7 @@ const App: React.FC = () => {
   const [regionOptions, setRegionOptions] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [countries, setCountries] = useState<any[]>([]);
+  const [filteredCountries, setFilteredCountries] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -19,7 +20,6 @@ const App: React.FC = () => {
       .get("/all")
       .then((response) => {
         const regions = response.data?.map((region: any) => region.region);
-        console.log("response", response);
 
         const uniqueRegions: string[] = [];
         regions?.forEach((region: string | null | undefined) => {
@@ -29,12 +29,12 @@ const App: React.FC = () => {
         });
 
         const options: string[] = ["Filter By Region", ...uniqueRegions];
-        console.log("options", options);
 
         setRegionOptions(options);
 
         // Set country data for page load
         setCountries(response.data);
+        setFilteredCountries(response.data); // Initialize filtered countries with all countries
       })
       .catch((error) => {
         console.error("Error fetching country options:", error);
@@ -50,11 +50,12 @@ const App: React.FC = () => {
         .get(`/region/${selectedOption}`)
         .then((response) => {
           setCountries(response.data);
-          setIsLoading(false); // Set loading to false when data is updated
+          setFilteredCountries(response.data); // Update filtered countries when data is updated
+          setIsLoading(false);
         })
         .catch((error) => {
           console.error("Error fetching countries:", error);
-          setIsLoading(false); // Set loading to false on error too
+          setIsLoading(false);
         });
     } else if (selectedOption === "Filter By Region") {
       setIsLoading(true);
@@ -63,17 +64,22 @@ const App: React.FC = () => {
         .get("/all")
         .then((response) => {
           setCountries(response.data);
-          setIsLoading(false); // Set loading to false when data is updated
+          setFilteredCountries(response.data); // Update filtered countries when data is updated
+          setIsLoading(false);
         })
         .catch((error) => {
           console.error("Error fetching countries:", error);
-          setIsLoading(false); // Set loading to false on error too
+          setIsLoading(false);
         });
     }
   }, [selectedOption]);
 
   const handleOptionSelected = (option: string) => {
     setSelectedOption(option);
+  };
+
+  const handleSearchResults = (results: any[]) => {
+    setFilteredCountries(results);
   };
 
   return (
@@ -90,10 +96,11 @@ const App: React.FC = () => {
       </div>
 
       <div className="form_and_FilterDiv">
-        {/* Pass countries and setCountries as props to SearchComponent */}
-        <SearchComponent onSearchResults={setCountries} countries={countries} />
+        <SearchComponent
+          onSearchResults={handleSearchResults}
+          countries={countries}
+        />
         <div>
-          {/* Pass countries and setCountries as props to Dropdown */}
           <Dropdown
             onOptionSelected={handleOptionSelected}
             options={regionOptions}
@@ -106,7 +113,7 @@ const App: React.FC = () => {
         {isLoading ? (
           <LoadingSpinner />
         ) : (
-          countries?.map((country, idx) => (
+          filteredCountries?.map((country, idx) => (
             <div className="country" key={idx}>
               <div>
                 <img
