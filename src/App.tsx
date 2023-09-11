@@ -19,7 +19,7 @@ const App: React.FC = () => {
       .get("/all")
       .then((response) => {
         const regions = response.data?.map((region: any) => region.region);
-        console.log(response);
+        console.log("response", response);
 
         const uniqueRegions: string[] = [];
         regions?.forEach((region: string | null | undefined) => {
@@ -29,6 +29,7 @@ const App: React.FC = () => {
         });
 
         const options: string[] = ["Filter By Region", ...uniqueRegions];
+        console.log("options", options);
 
         setRegionOptions(options);
 
@@ -47,6 +48,19 @@ const App: React.FC = () => {
 
       axios
         .get(`/region/${selectedOption}`)
+        .then((response) => {
+          setCountries(response.data);
+          setIsLoading(false); // Set loading to false when data is updated
+        })
+        .catch((error) => {
+          console.error("Error fetching countries:", error);
+          setIsLoading(false); // Set loading to false on error too
+        });
+    } else if (selectedOption === "Filter By Region") {
+      setIsLoading(true);
+
+      axios
+        .get("/all")
         .then((response) => {
           setCountries(response.data);
           setIsLoading(false); // Set loading to false when data is updated
