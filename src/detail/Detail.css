@@ -1,0 +1,24 @@
+.main {
+  width: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  background: var(--dark-blue);
+  color: var(--white);
+}
+.top_nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  background-color: var(--blue);
+  padding: 2rem 1rem;
+}
+.top_nav h1 {
+  font-size: 1rem;
+}
+.top_nav span {
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}

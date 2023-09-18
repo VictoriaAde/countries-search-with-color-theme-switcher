@@ -1,10 +1,9 @@
 .main {
   width: 100%;
   height: 100vh;
-  max-height: 1000px;
+  max-height: 100vh;
   background: var(--dark-blue);
   color: var(--white);
-  font-family: "Nunito Sans", sans-serif;
 }
 .top_nav {
   display: flex;
@@ -62,6 +61,28 @@
 }
 .country {
   background-color: var(--blue);
+  transition: all 0.5s ease-in-out;
+}
+
+.country_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent background */
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.countrylink:hover .country_overlay {
+  width: 280px;
+  box-shadow: var(--blue) 0px 5px 15px;
+}
+.countrylink {
+  text-decoration: none;
 }
 .country_info {
   padding: 1.3rem 1rem 1rem;
@@ -69,13 +90,16 @@
 .country_info h3 {
   font-size: 1rem;
   margin-bottom: 1.5rem;
+  color: var(--white);
 }
 .country_info p {
   font-size: 0.9rem;
   margin-bottom: 0.4rem;
+  color: var(--white);
 }
 .country_info span {
   font-weight: 600;
+  color: var(--light-gray);
 }
 .img_flag {
   width: 100%;

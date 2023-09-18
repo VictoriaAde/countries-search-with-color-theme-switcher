@@ -6,6 +6,7 @@ import { IoMdMoon } from "react-icons/io";
 import Dropdown from "./components/Dropdown/Dropdown";
 import LoadingSpinner from "./components/LoadingSpinner/LoadingSpinner";
 import SearchComponent from "./components/Search/Search";
+import { Link } from "react-router-dom";
 
 const App: React.FC = () => {
   const [regionOptions, setRegionOptions] = useState<string[]>([]);
@@ -15,7 +16,6 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch region options and all countries on page load
     axios
       .get("/all")
       .then((response) => {
@@ -31,10 +31,11 @@ const App: React.FC = () => {
         const options: string[] = ["Filter By Region", ...uniqueRegions];
 
         setRegionOptions(options);
+        console.log(response.data);
 
         // Set country data for page load
         setCountries(response.data);
-        setFilteredCountries(response.data); // Initialize filtered countries with all countries
+        setFilteredCountries(response.data);
       })
       .catch((error) => {
         console.error("Error fetching country options:", error);
@@ -50,7 +51,7 @@ const App: React.FC = () => {
         .get(`/region/${selectedOption}`)
         .then((response) => {
           setCountries(response.data);
-          setFilteredCountries(response.data); // Update filtered countries when data is updated
+          setFilteredCountries(response.data);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -64,7 +65,7 @@ const App: React.FC = () => {
         .get("/all")
         .then((response) => {
           setCountries(response.data);
-          setFilteredCountries(response.data); // Update filtered countries when data is updated
+          setFilteredCountries(response.data);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -115,28 +116,34 @@ const App: React.FC = () => {
         ) : (
           filteredCountries?.map((country, idx) => (
             <div className="country" key={idx}>
-              <div>
-                <img
-                  className="img_flag"
-                  src={country.flags.png}
-                  alt={country.flags.alt}
-                />
-              </div>
-              <div className="country_info">
-                <h3>{country.name.common}</h3>
-                <p>
-                  <span>Population:</span> {country.population}
-                </p>
-                <p>
-                  <span>Region:</span> {country.region}
-                </p>
-                <p>
-                  <span>Capital:</span>{" "}
-                  {country.capital && country.capital[0]
-                    ? country.capital[0]
-                    : "N/A"}
-                </p>
-              </div>
+              <Link to={`/country/${country.ccn3}`} className="countrylink">
+                <div>
+                  <img
+                    className="img_flag"
+                    src={country.flags.png}
+                    alt={country.flags.alt}
+                  />
+                </div>
+                <div className="country_info">
+                  <h3>{country.name.common}</h3>
+                  <p>
+                    <span>Population:</span> {country.population}
+                  </p>
+                  <p>
+                    <span>Region:</span> {country.region}
+                  </p>
+                  <p>
+                    <span>Capital:</span>{" "}
+                    {country.capital && country.capital[0]
+                      ? country.capital[0]
+                      : "N/A"}
+                  </p>
+                </div>
+                {/* Overlay */}
+                <div className="country_overlay">
+                  <button className="view_details_button">View Details</button>
+                </div>
+              </Link>
             </div>
           ))
         )}
