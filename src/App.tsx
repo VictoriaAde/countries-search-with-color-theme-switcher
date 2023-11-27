@@ -1,3 +1,4 @@
+// App.tsx
 import React, { useState, useEffect } from "react";
 import axios from "./helpers/api";
 import "./App.css";
@@ -7,6 +8,7 @@ import Dropdown from "./components/Dropdown/Dropdown";
 import LoadingSpinner from "./components/LoadingSpinner/LoadingSpinner";
 import SearchComponent from "./components/Search/Search";
 import { Link } from "react-router-dom";
+import { useDebounce } from "./helpers/debounce";
 
 const App: React.FC = () => {
   const [regionOptions, setRegionOptions] = useState<string[]>([]);
@@ -14,6 +16,8 @@ const App: React.FC = () => {
   const [countries, setCountries] = useState<any[]>([]);
   const [filteredCountries, setFilteredCountries] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   useEffect(() => {
     axios
@@ -31,7 +35,6 @@ const App: React.FC = () => {
         const options: string[] = ["Filter By Region", ...uniqueRegions];
 
         setRegionOptions(options);
-        console.log(response.data);
 
         // Set country data for page load
         setCountries(response.data);
@@ -75,12 +78,36 @@ const App: React.FC = () => {
     }
   }, [selectedOption]);
 
+  // Add this useEffect block to handle the debounced search term
+  useEffect(() => {
+    if (debouncedSearchTerm !== "") {
+      // You can put your search logic here
+      // For example, filter countries based on the debouncedSearchTerm
+      const filtered = countries.filter((country) =>
+        country.name.common
+          .toLowerCase()
+          .includes(debouncedSearchTerm.toLowerCase())
+      );
+
+      // Update the filtered countries with the search results
+      setFilteredCountries(filtered);
+    } else {
+      // If the search term is empty, reset the filtered countries
+      setFilteredCountries(countries);
+    }
+  }, [debouncedSearchTerm, countries]);
+
   const handleOptionSelected = (option: string) => {
     setSelectedOption(option);
   };
 
   const handleSearchResults = (results: any[]) => {
     setFilteredCountries(results);
+  };
+
+  // Update the searchTerm state when the user types in the search input
+  const handleSearchTermChange = (newSearchTerm: string) => {
+    setSearchTerm(newSearchTerm);
   };
 
   return (
@@ -97,9 +124,11 @@ const App: React.FC = () => {
       </div>
 
       <div className="form_and_FilterDiv">
+        {/* Pass handleSearchTermChange as a prop to the SearchComponent */}
         <SearchComponent
           onSearchResults={handleSearchResults}
           countries={countries}
+          onSearchTermChange={handleSearchTermChange}
         />
         <div>
           <Dropdown

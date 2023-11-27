@@ -14,15 +14,15 @@ interface CountryDetailProps {
 const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
   const [country, setCountry] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  console.log("country", country);
 
   useEffect(() => {
     axios
-      .get(`/alpha/${match.params.ccn3}`)
+      .get(`/alpha`)
       .then((response) => {
         setCountry(response.data);
         setIsLoading(false);
-
-        console.log(response.data);
+        console.log("response", response.data);
       })
       .catch((error) => {
         console.error("Error fetching country details:", error);

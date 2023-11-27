@@ -1,21 +1,30 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 
 interface SearchComponentProps {
   onSearchResults: (results: any[]) => void;
-  countries: any[]; // Pass the countries data as a prop
+  countries: any[];
+  onSearchTermChange: (newSearchTerm: string) => void;
 }
 
 const SearchComponent: React.FC<SearchComponentProps> = ({
   onSearchResults,
   countries,
+  onSearchTermChange,
 }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  // Use useEffect to listen for changes in searchTerm and notify the parent
+  useEffect(() => {
+    onSearchTermChange(searchTerm);
+  }, [searchTerm, onSearchTermChange]);
 
   const handleSearch = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newSearchTerm = e.target.value;
       setSearchTerm(newSearchTerm);
+
+      // Note: You can keep the existing filtering logic here if needed
 
       // Filter countries based on the search term
       const filtered = countries.filter((country) =>
