@@ -1,4 +1,3 @@
-// App.tsx
 import React, { useState, useEffect } from "react";
 import axios from "./helpers/api";
 import "./App.css";
@@ -18,6 +17,11 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const [visibleItems, setVisibleItem] = useState(20);
+
+  const handleLoadMore = () => {
+    setVisibleItem((prev: number) => prev + 10); // Increase the number of visible items
+  };
 
   useEffect(() => {
     axios
@@ -143,9 +147,9 @@ const App: React.FC = () => {
         {isLoading ? (
           <LoadingSpinner />
         ) : (
-          filteredCountries?.map((country, idx) => (
-            <div className="country" key={idx}>
-              <Link to={`/country/${country.ccn3}`} className="countrylink">
+          filteredCountries?.slice(0, visibleItems).map((country, idx) => (
+            <Link to={`/country/${country.ccn3}`} className="countrylink">
+              <div className="country" key={idx}>
                 <div>
                   <img
                     className="img_flag"
@@ -169,12 +173,20 @@ const App: React.FC = () => {
                   </p>
                 </div>
                 {/* Overlay */}
-                <div className="country_overlay">
+                {/* <div className="country_overlay">
                   <button className="view_details_button">View Details</button>
-                </div>
-              </Link>
-            </div>
+                </div> */}
+              </div>
+            </Link>
           ))
+        )}
+      </div>
+
+      <div className="wrapper_load_more_btn">
+        {filteredCountries.length > visibleItems && (
+          <button className="load_more_btn" onClick={handleLoadMore}>
+            Load More
+          </button>
         )}
       </div>
     </main>
