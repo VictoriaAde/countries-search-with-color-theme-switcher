@@ -3,7 +3,7 @@ import axios from "../helpers/api";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import { IoMdMoon } from "react-icons/io";
 import "../global.css";
-
+import { useParams } from "react-router-dom";
 interface CountryDetailProps {
   match: {
     params: {
@@ -12,23 +12,27 @@ interface CountryDetailProps {
   };
 }
 const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
-  const [country, setCountry] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  console.log("country", country);
+  const [countryDetails, setCountryDetails] = useState<any>({});
+  const { countryName } = useParams<{ countryName: string }>();
 
   useEffect(() => {
-    axios
-      .get(`/alpha`)
-      .then((response) => {
-        setCountry(response.data);
+    const fetchCountryDetails = async () => {
+      try {
+        const response = await axios.get(
+          `https://restcountries.com/v3.1/name/${countryName}`
+        );
+        setCountryDetails(response.data[0]);
         setIsLoading(false);
-        console.log("response", response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching country details:", error);
         setIsLoading(false);
-      });
-  }, [match.params.ccn3]);
+      }
+    };
+
+    fetchCountryDetails();
+  }, [countryName]);
+  console.log("details", countryDetails);
 
   return (
     <main className="main">
@@ -45,21 +49,29 @@ const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
 
       {isLoading ? (
         <LoadingSpinner />
-      ) : country ? (
+      ) : countryDetails ? (
         <div>
-          <h2>{country.name.common}</h2>
-          <img src={country.flags.png} alt={country.flags.alt} />
-          <p>
-            <span>Population:</span> {country.population}
-          </p>
-          <p>
-            <span>Region:</span> {country.region}
-          </p>
-          <p>
-            <span>Capital:</span>{" "}
-            {country.capital && country.capital[0] ? country.capital[0] : "N/A"}
-          </p>
-          {/* Add more details as needed */}
+          <div>
+            <img
+              src={countryDetails.flags.png}
+              alt={countryDetails.flags.alt}
+            />
+          </div>
+          <div>
+            <h2>{countryDetails.name.common}</h2>
+            <p>
+              <span>Population:</span> {countryDetails.population}
+            </p>
+            <p>
+              <span>Region:</span> {countryDetails.region}
+            </p>
+            <p>
+              <span>Capital:</span>{" "}
+              {countryDetails.capital && countryDetails.capital[0]
+                ? countryDetails.capital[0]
+                : "N/A"}
+            </p>
+          </div>
         </div>
       ) : (
         <p>Country not found.</p>

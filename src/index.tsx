@@ -5,6 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Detail from "./detail/Detail";
 import ErrorPage from "./components/ErrorPage/errorpage";
+import "./global.css";
 
 function getElement(id: string): HTMLElement | null {
   return document.getElementById(id);
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/country/:ccn3",
+    path: "/country/:countryName",
     element: (
       <Detail
         match={{

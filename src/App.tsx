@@ -20,7 +20,7 @@ const App: React.FC = () => {
   const [visibleItems, setVisibleItem] = useState(20);
 
   const handleLoadMore = () => {
-    setVisibleItem((prev: number) => prev + 10); // Increase the number of visible items
+    setVisibleItem((prev: number) => prev + 10);
   };
 
   useEffect(() => {
@@ -48,6 +48,8 @@ const App: React.FC = () => {
         console.error("Error fetching country options:", error);
       });
   }, []);
+
+  console.log(countries);
 
   useEffect(() => {
     // Fetch countries based on selected region
@@ -82,11 +84,10 @@ const App: React.FC = () => {
     }
   }, [selectedOption]);
 
-  // Add this useEffect block to handle the debounced search term
+  // useEffect to handle the debounced search term
   useEffect(() => {
     if (debouncedSearchTerm !== "") {
-      // You can put your search logic here
-      // For example, filter countries based on the debouncedSearchTerm
+      //filter countries based on the debouncedSearchTerm
       const filtered = countries.filter((country) =>
         country.name.common
           .toLowerCase()
@@ -128,7 +129,6 @@ const App: React.FC = () => {
       </div>
 
       <div className="form_and_FilterDiv">
-        {/* Pass handleSearchTermChange as a prop to the SearchComponent */}
         <SearchComponent
           onSearchResults={handleSearchResults}
           countries={countries}
@@ -148,8 +148,12 @@ const App: React.FC = () => {
           <LoadingSpinner />
         ) : (
           filteredCountries?.slice(0, visibleItems).map((country, idx) => (
-            <Link to={`/country/${country.ccn3}`} className="countrylink">
-              <div className="country" key={idx}>
+            <Link
+              to={`/country/${country.name.common}`}
+              key={idx}
+              className="countrylink"
+            >
+              <div className="country">
                 <div>
                   <img
                     className="img_flag"
