@@ -3,11 +3,26 @@
   display: grid;
   grid-template-columns: 40% 60%;
   gap: 4rem;
-  padding: 2rem 3rem;
+  padding: 2rem 3rem 6rem;
+}
+.back_btn {
+  display: inline-flex;
+  /* justify-content: center; */
+  align-items: center;
+  gap: 0.3rem;
+  text-decoration: none;
+  cursor: pointer;
+  background-color: var(--blue);
+  color: var(--light-gray);
+  padding: 0.4rem 0.9rem;
+  border: 0;
+  font-size: 0.8rem;
+  margin: 1.5rem 3rem;
 }
 .flag_img {
   width: 100%;
   height: 300px;
+  object-fit: contain;
   /* object-fit: cover; */
 }
 .detail_info {
@@ -30,4 +45,24 @@
 .detail_info_inner span {
   font-weight: 600;
   font-size: 0.7rem;
+}
+.tags {
+  display: flex;
+  font-size: 0.7rem;
+  margin-top: 2rem;
+}
+.tag {
+  background-color: var(--blue);
+  color: var(--light-gray);
+  padding: 0.1rem 0.9rem;
+  font-size: 0.5rem;
+  margin-left: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+}
+@media screen and (max-width: 800px) {
+  .detail {
+    grid-template-columns: 100%;
+    gap: 0;
+  }
 }

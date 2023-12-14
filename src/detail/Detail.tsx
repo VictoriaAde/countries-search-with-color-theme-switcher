@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "../helpers/api";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import { IoMdMoon } from "react-icons/io";
+import { IoIosArrowRoundBack } from "react-icons/io";
+
 import "../global.css";
 import "./Detail.css";
 
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 interface CountryDetailProps {
   match: {
@@ -50,6 +52,12 @@ const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
             <IoMdMoon /> Dark mode
           </span>
         </div>
+      </div>
+
+      <div>
+        <Link to="/" className="back_btn">
+          <IoIosArrowRoundBack fontSize={23} /> Back
+        </Link>
       </div>
 
       {isLoading ? (
@@ -98,6 +106,30 @@ const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
                     <span>Languages:</span>
                   </p>
                 </div>
+              </div>
+              <div className="tags">
+                <span>Border Countries:</span>
+                {country.borders?.map(
+                  (
+                    border:
+                      | string
+                      | number
+                      | boolean
+                      | React.ReactElement<
+                          any,
+                          string | React.JSXElementConstructor<any>
+                        >
+                      | Iterable<React.ReactNode>
+                      | React.ReactPortal
+                      | null
+                      | undefined,
+                    index: React.Key | null | undefined
+                  ) => (
+                    <span key={index} className="tag">
+                      {border}
+                    </span>
+                  )
+                )}
               </div>
             </div>
           </div>
