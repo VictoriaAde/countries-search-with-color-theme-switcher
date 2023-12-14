@@ -1,24 +1,33 @@
-.main {
+.detail {
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 40% 60%;
+  gap: 4rem;
+  padding: 2rem 3rem;
+}
+.flag_img {
   width: 100%;
-  height: 100vh;
-  max-height: 100vh;
-  background: var(--dark-blue);
-  color: var(--white);
+  height: 300px;
+  /* object-fit: cover; */
 }
-.top_nav {
+.detail_info {
+  padding-top: 2rem;
+}
+.detail_info h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.detail_info_inner {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  background-color: var(--blue);
-  padding: 2rem 1rem;
+  gap: 6rem;
 }
-.top_nav h1 {
-  font-size: 1rem;
+.detail_info_inner p {
+  font-size: 0.7rem;
+  margin-bottom: 0.5rem;
 }
-.top_nav span {
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+.detail_info_inner span {
+  font-weight: 600;
+  font-size: 0.7rem;
 }

@@ -3,7 +3,10 @@ import axios from "../helpers/api";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import { IoMdMoon } from "react-icons/io";
 import "../global.css";
+import "./Detail.css";
+
 import { useParams } from "react-router-dom";
+
 interface CountryDetailProps {
   match: {
     params: {
@@ -11,9 +14,10 @@ interface CountryDetailProps {
     };
   };
 }
+
 const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [countryDetails, setCountryDetails] = useState<any>({});
+  const [countryDetails, setCountryDetails] = useState<any[]>([]);
   const { countryName } = useParams<{ countryName: string }>();
 
   useEffect(() => {
@@ -22,7 +26,7 @@ const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
         const response = await axios.get(
           `https://restcountries.com/v3.1/name/${countryName}`
         );
-        setCountryDetails(response.data[0]);
+        setCountryDetails([response.data[0]]);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching country details:", error);
@@ -32,6 +36,7 @@ const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
 
     fetchCountryDetails();
   }, [countryName]);
+
   console.log("details", countryDetails);
 
   return (
@@ -49,30 +54,54 @@ const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
 
       {isLoading ? (
         <LoadingSpinner />
-      ) : countryDetails ? (
-        <div>
-          <div>
-            <img
-              src={countryDetails.flags.png}
-              alt={countryDetails.flags.alt}
-            />
+      ) : countryDetails.length > 0 ? (
+        countryDetails.map((country) => (
+          <div className="detail" key={country.ccn3}>
+            <div>
+              <img
+                className="flag_img"
+                src={country.flags.png}
+                alt={country.flags.alt}
+              />
+            </div>
+            <div className="detail_info">
+              <h2>{country.name.common}</h2>
+              <div className="detail_info_inner">
+                <div>
+                  <p>
+                    <span>Native Name:</span> {country.name.official}
+                  </p>
+                  <p>
+                    <span>Population:</span> {country.population}
+                  </p>
+                  <p>
+                    <span>Region:</span> {country.region}
+                  </p>
+                  <p>
+                    <span>Sub Region:</span> {country.subregion}
+                  </p>
+                  <p>
+                    <span>Capital:</span>{" "}
+                    {country.capital && country.capital[0]
+                      ? country.capital[0]
+                      : "N/A"}
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <span>Top level Domain:</span> {country.tld[0]}
+                  </p>
+                  <p>
+                    <span>Currencies:</span>
+                  </p>
+                  <p>
+                    <span>Languages:</span>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <h2>{countryDetails.name.common}</h2>
-            <p>
-              <span>Population:</span> {countryDetails.population}
-            </p>
-            <p>
-              <span>Region:</span> {countryDetails.region}
-            </p>
-            <p>
-              <span>Capital:</span>{" "}
-              {countryDetails.capital && countryDetails.capital[0]
-                ? countryDetails.capital[0]
-                : "N/A"}
-            </p>
-          </div>
-        </div>
+        ))
       ) : (
         <p>Country not found.</p>
       )}
