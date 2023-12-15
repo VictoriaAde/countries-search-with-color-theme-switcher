@@ -8,6 +8,7 @@ import LoadingSpinner from "./components/LoadingSpinner/LoadingSpinner";
 import SearchComponent from "./components/Search/Search";
 import { Link } from "react-router-dom";
 import { useDebounce } from "./helpers/debounce";
+import Navbar from "./components/Navbar/Navbar";
 
 const App: React.FC = () => {
   const [regionOptions, setRegionOptions] = useState<string[]>([]);
@@ -18,6 +19,15 @@ const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
   const [visibleItems, setVisibleItem] = useState(20);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+  };
+
+  useEffect(() => {
+    document.body.classList.toggle("dark-mode", isDarkMode);
+  }, [isDarkMode]);
 
   const handleLoadMore = () => {
     setVisibleItem((prev: number) => prev + 10);
@@ -116,23 +126,14 @@ const App: React.FC = () => {
   };
 
   return (
-    <main className="main">
-      <div className="top_nav">
-        <div>
-          <h1>Where in the world?</h1>
-        </div>
-        <div>
-          <span>
-            <IoMdMoon /> Dark mode
-          </span>
-        </div>
-      </div>
-
+    <main className={`main ${isDarkMode ? "dark-mode" : ""}`}>
+      <Navbar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       <div className="form_and_FilterDiv">
         <SearchComponent
           onSearchResults={handleSearchResults}
           countries={countries}
           onSearchTermChange={handleSearchTermChange}
+          isDarkMode={isDarkMode}
         />
         <div>
           <Dropdown
@@ -143,7 +144,7 @@ const App: React.FC = () => {
           />
         </div>
       </div>
-      <div className="countries">
+      <div className={`countries ${isDarkMode ? "dark-mode" : ""}`}>
         {isLoading ? (
           <LoadingSpinner />
         ) : (
@@ -153,7 +154,7 @@ const App: React.FC = () => {
               key={idx}
               className="countrylink"
             >
-              <div className="country">
+              <div className={`country ${isDarkMode ? "dark-mode" : ""}`}>
                 <div>
                   <img
                     className="img_flag"
@@ -162,15 +163,25 @@ const App: React.FC = () => {
                   />
                 </div>
                 <div className="country_info">
-                  <h3>{country.name.common}</h3>
-                  <p>
-                    <span>Population:</span> {country.population}
+                  <h3 className={`${isDarkMode ? "dark-mode" : ""}`}>
+                    {country.name.common}
+                  </h3>
+                  <p className={`${isDarkMode ? "dark-mode" : ""}`}>
+                    <span className={`${isDarkMode ? "dark-mode" : ""}`}>
+                      Population:
+                    </span>{" "}
+                    {country.population}
                   </p>
-                  <p>
-                    <span>Region:</span> {country.region}
+                  <p className={`${isDarkMode ? "dark-mode" : ""}`}>
+                    <span className={`${isDarkMode ? "dark-mode" : ""}`}>
+                      Region:
+                    </span>{" "}
+                    {country.region}
                   </p>
-                  <p>
-                    <span>Capital:</span>{" "}
+                  <p className={`${isDarkMode ? "dark-mode" : ""}`}>
+                    <span className={`${isDarkMode ? "dark-mode" : ""}`}>
+                      Capital:
+                    </span>{" "}
                     {country.capital && country.capital[0]
                       ? country.capital[0]
                       : "N/A"}
@@ -185,10 +196,12 @@ const App: React.FC = () => {
           ))
         )}
       </div>
-
-      <div className="wrapper_load_more_btn">
+      <div className={`wrapper_load_more_btn ${isDarkMode ? "dark-mode" : ""}`}>
         {filteredCountries.length > visibleItems && (
-          <button className="load_more_btn" onClick={handleLoadMore}>
+          <button
+            className={`load_more_btn ${isDarkMode ? "dark-mode" : ""}`}
+            onClick={handleLoadMore}
+          >
             Load More
           </button>
         )}

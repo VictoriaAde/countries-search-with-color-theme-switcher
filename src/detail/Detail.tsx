@@ -8,6 +8,7 @@ import "../global.css";
 import "./Detail.css";
 
 import { Link, useParams } from "react-router-dom";
+import Navbar from "../components/Navbar/Navbar";
 
 interface CountryDetailProps {
   match: {
@@ -21,6 +22,15 @@ const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [countryDetails, setCountryDetails] = useState<any[]>([]);
   const { countryName } = useParams<{ countryName: string }>();
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+  };
+
+  useEffect(() => {
+    document.body.classList.toggle("dark-mode", isDarkMode);
+  }, [isDarkMode]);
 
   useEffect(() => {
     const fetchCountryDetails = async () => {
@@ -42,20 +52,11 @@ const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
   console.log("details", countryDetails);
 
   return (
-    <main className="main">
-      <div className="top_nav">
-        <div>
-          <h1>Where in the world?</h1>
-        </div>
-        <div>
-          <span>
-            <IoMdMoon /> Dark mode
-          </span>
-        </div>
-      </div>
+    <main className={`main ${isDarkMode ? "dark-mode" : ""}`}>
+      <Navbar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
 
       <div>
-        <Link to="/" className="back_btn">
+        <Link to="/" className={`back_btn ${isDarkMode ? "dark-mode" : ""}`}>
           <IoIosArrowRoundBack fontSize={23} /> Back
         </Link>
       </div>
@@ -64,7 +65,10 @@ const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
         <LoadingSpinner />
       ) : countryDetails.length > 0 ? (
         countryDetails.map((country) => (
-          <div className="detail" key={country.ccn3}>
+          <div
+            className={`detail ${isDarkMode ? "dark-mode" : ""}`}
+            key={country.ccn3}
+          >
             <div>
               <img
                 className="flag_img"
@@ -125,7 +129,10 @@ const CountryDetail: React.FC<CountryDetailProps> = ({ match }) => {
                       | undefined,
                     index: React.Key | null | undefined
                   ) => (
-                    <span key={index} className="tag">
+                    <span
+                      key={index}
+                      className={`tag ${isDarkMode ? "dark-mode" : ""}`}
+                    >
                       {border}
                     </span>
                   )
