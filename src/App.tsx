@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "./helpers/api";
 import "./App.css";
 import "./global.css";
-import { IoMdMoon } from "react-icons/io";
 import Dropdown from "./components/Dropdown/Dropdown";
 import LoadingSpinner from "./components/LoadingSpinner/LoadingSpinner";
 import SearchComponent from "./components/Search/Search";
@@ -141,6 +140,7 @@ const App: React.FC = () => {
             options={regionOptions}
             countries={countries}
             setCountries={() => {}}
+            isDarkMode={isDarkMode}
           />
         </div>
       </div>

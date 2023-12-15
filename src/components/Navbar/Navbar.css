@@ -4,7 +4,7 @@
   align-items: center;
   margin-bottom: 2rem;
   background-color: var(--blue);
-  padding: 2rem 3rem;
+  padding: 2rem 1rem;
 }
 
 .top_nav h1 {
@@ -25,10 +25,13 @@
   align-items: center;
   margin-bottom: 2rem;
   background-color: var(--white);
-  padding: 2rem 3rem;
+  padding: 2rem 1rem;
 }
 @media screen and (min-width: 767px) {
+  .top_nav.dark-mode {
+    padding: 2rem 3rem;
+  }
   .top_nav {
-    padding: 2rem 2rem;
+    padding: 2rem 3rem;
   }
 }

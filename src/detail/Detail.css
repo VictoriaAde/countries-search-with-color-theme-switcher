@@ -94,9 +94,29 @@
   .detail.dark-mode {
     grid-template-columns: 100%;
     gap: 0;
+    padding: 2rem 1rem 6rem;
   }
   .detail {
     grid-template-columns: 100%;
     gap: 0;
+    padding: 2rem 1rem 6rem;
+  }
+  .back_btn.dark-mode {
+    margin: 1.5rem 1.5rem;
+  }
+  .back_btn {
+    margin: 1.5rem 1.5rem;
+  }
+  .detail_info_inner.dark-mode {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .detail_info_inner {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
   }
 }
