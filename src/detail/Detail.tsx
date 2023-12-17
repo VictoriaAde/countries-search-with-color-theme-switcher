@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "../helpers/api";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
-import { IoMdMoon } from "react-icons/io";
 import { IoIosArrowRoundBack } from "react-icons/io";
 
 import "../global.css";
